@@ -7,38 +7,40 @@ use Illuminate\Http\Request;
 use App\Http\Requests\LoginRequest;
 use Illuminate\Support\Facades\Hash;
 use App\Http\Requests\RegisterRequest;
+use App\Http\Resources\AutenticarResource;
 use Illuminate\Validation\ValidationException;
 
 class AutenticarController extends Controller
 {
     public function register(RegisterRequest $request)
     {
-        $user = new User();
+       return (new AutenticarResource(User::create($request->all())))
+                ->additional(['msg' => 'Registrado correctamente']);
 
-        $user->name = $request->name;
-        $user->email = $request->email;
-        $user->password = bcrypt($request->password);
-        
-        $user->save();
-
-        return response()->json([
-            'res' => true,
-            'msg' => 'Registrado correctamente'
-        ], 200);
+        // return response()->json([
+        //     'res' => true,
+        //     'msg' => 'Registrado correctamente'
+        // ], 200);
     }
 
     public function login(LoginRequest $request)
     {
-        
-        
-        return (new PensamientoResource($token = $user->createToken($request->email)->plainTextToken))
-                ->additional(['msg' => 'Usuario logueado correctamente']);
+        $user = User::where('email', $request->email)->first();
 
-        // return response()->json([
-        //     'res' => true,
-        //     'msg' => 'Logueado correctamente',
-        //     'token' => $token
-        // ], 200);
+        if (! $user || ! Hash::check($request->password, $user->password)) {
+            throw ValidationException::withMessages([
+                'msg' => ['Las credenciales no son correctas.'],
+            ]);
+        }
+
+        $token = $user->createToken($request->email)->plainTextToken;
+
+        return response()->json([
+            'res' => true,
+            'msg' => 'Logueado correctamente',
+            'token' => $token,
+            'user' => $user
+        ], 200);
     }
 
     public function logout(Request $request)

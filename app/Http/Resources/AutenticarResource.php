@@ -2,10 +2,9 @@
 
 namespace App\Http\Resources;
 
-use App\Models\User;
 use Illuminate\Http\Resources\Json\JsonResource;
 
-class LoginResource extends JsonResource
+class AutenticarResource extends JsonResource
 {
     /**
      * Transform the resource into an array.
@@ -13,23 +12,21 @@ class LoginResource extends JsonResource
      * @param  \Illuminate\Http\Request  $request
      * @return array|\Illuminate\Contracts\Support\Arrayable|\JsonSerializable
      */
-    
     public function toArray($request)
     {
-        $user = User::where('email', $request->email)->first();
+        return [
+            'nombre' => $request->name,
+            'correo' => $request->email,
+            'password' => bcrypt($request->password),
+            'fecha_creacion' => $this->created_at->diffForHumans(),
+            'fecha_actualizacion' => $this->updated_at->diffForHumans()
+        ];
 
-        if (! $user || ! Hash::check($request->password, $user->password)) {
-            throw ValidationException::withMessages([
-                'msg' => ['Las credenciales no son correctas.'],
-            ]);
-        }
     }
-    
     public function with($request)
     {
         return [
-            'res' => true,
-            'token' => $token
+            'res' => true
         ];
     }
 }
