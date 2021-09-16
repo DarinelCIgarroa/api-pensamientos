@@ -5,8 +5,6 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AutenticarController;
 use App\Http\Controllers\PensamientosController;
 
-
-
 Route::post('register', [AutenticarController::class, 'register']);
 Route::post('login', [AutenticarController::class, 'login']);
 
