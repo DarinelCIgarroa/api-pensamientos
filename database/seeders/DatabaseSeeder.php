@@ -22,6 +22,6 @@ class DatabaseSeeder extends Seeder
         ]);
 
         User::factory(5)->create();
-        Pensamiento::factory(3)->create();
+        Pensamiento::factory(20)->create();
     }
 }

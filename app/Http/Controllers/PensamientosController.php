@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\User;
 use App\Models\Pensamiento;
 use Illuminate\Http\Request;
 use App\Http\Controllers\ApiController;
@@ -18,8 +19,12 @@ class PensamientosController extends Controller
      */
     public function index()
     {
-        return (PensamientoResource::collection(Pensamiento::all()))
-                ->additional(['mgs' => 'Lista de pensamientos extraida exitosamente']);
+        
+        $user_id = auth()->user()->id;
+        return (PensamientoResource::collection(Pensamiento::where('user_id', $user_id)->get()))
+                ->additional([
+                    'mgs' => 'Lista de pensamientos extraida exitosamente'
+                ]);
     }
 
     /**
@@ -89,9 +94,10 @@ class PensamientosController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy(Request $request, Pensamiento $pensamiento)
     {
-        $pensamiento = Pensamiento::findOrFail($id);
+        $this->authorize('delete', $pensamiento);
+        // $pensamiento = Pensamiento::findOrFail($id);
         $pensamiento->delete();
         
         // return $pensamiento->id;

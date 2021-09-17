@@ -2,12 +2,14 @@
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\HomeController;
 use App\Http\Controllers\AutenticarController;
 use App\Http\Controllers\PensamientosController;
 
 Route::post('register', [AutenticarController::class, 'register']);
 Route::post('login', [AutenticarController::class, 'login']);
 
+Route::get('pensamientos/home', [HomeController::class, 'index']);
 
 Route::group(['middleware' => ['auth:sanctum']], function () {
     Route::apiResource('pensamientos', PensamientosController::class);

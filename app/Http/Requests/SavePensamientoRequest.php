@@ -24,8 +24,8 @@ class SavePensamientoRequest extends FormRequest
     public function rules()
     {
         return [
-            'title' => 'required|max:255',
-            'description' => 'required|max:100',
+            'title' => 'required|max:255|min:5',
+            'description' => 'required|max:100|min:5',
             'user_id' => 'required|exists:App\Models\User,id',
         ];
     }
