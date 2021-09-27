@@ -26,8 +26,18 @@ class RegisterRequest extends FormRequest
     {
         return [
             'name' => 'required',
-            'email' => Rule::unique('users')->ignore($this->id),
-            'password' => 'required|max:30'
+            'email' => 'required|email',
+            'password' => 'required|min:8'
+        ];
+    }
+    public function messages()
+    {
+        return [
+            'name.required' => 'El nombre es obligatorio',
+            'email.required' => 'El correo electrónico es obligatorio',
+            'email.email' => 'El correo electrónico debe ser valido',
+            'password.required' => 'La constraseña es obligatoria',
+            'password.min' => 'La constraseña debe contener al menos 8 carácteres',
         ];
     }
 }

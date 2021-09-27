@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+
 use App\Models\User;
 use Illuminate\Http\Request;
 use App\Http\Requests\LoginRequest;
@@ -14,13 +15,18 @@ class AutenticarController extends Controller
 {
     public function register(RegisterRequest $request)
     {
-       return (new AutenticarResource(User::create($request->all())))
-                ->additional(['msg' => 'Registrado correctamente']);
+       $user = new User;
 
-        // return response()->json([
-        //     'res' => true,
-        //     'msg' => 'Registrado correctamente'
-        // ], 200);
+       $user->name = $request->name;
+       $user->email = $request->email;
+       $user->password = bcrypt($request->password);
+
+        $user->save();
+
+        return response()->json([
+            'res' => true,
+            'msg' => 'Registrado correctamente'
+        ], 201);
     }
 
     public function login(LoginRequest $request)
@@ -29,7 +35,7 @@ class AutenticarController extends Controller
 
         if (! $user || ! Hash::check($request->password, $user->password)) {
             throw ValidationException::withMessages([
-                'msg' => ['Las credenciales no son correctas.'],
+                'msg' => ['Las datos no son correctos.'],
             ]);
         }
 

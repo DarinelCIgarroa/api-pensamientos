@@ -11,9 +11,10 @@ class HomeController extends Controller
     public function index ()
     {
         return (PensamientoResource::collection(Pensamiento::all()))
-            ->additional([
-                'msg' => 'Lista de pensamientos extraida exitosamente'
-            ]);
+        ->additional([
+            'mgs' => 'Lista de pensamientos extraida exitosamente',
+            'res' => true
+        ]);
         
     }
 }
